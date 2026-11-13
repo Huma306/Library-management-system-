@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX Library - College Library Management System | Page 7: Member's Borrowing History</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b1329] text-gray-100 antialiased selection:bg-emerald-500 selection:text-black">
+
+  <!-- Global Header Navigation -->
+  <header id="global-nav"></header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    
+    <!-- Page Header & Member Switcher -->
+    <div class="pb-6 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          PAGE 7 OF 8: MEMBER BORROWING HISTORY & CIRCULATION LEDGER
+        </div>
+        <h1 class="font-serif-title text-3xl sm:text-4xl font-extrabold text-white">
+          Member Circulation Record
+        </h1>
+        <p class="text-xs text-gray-400 mt-1">
+          Complete individual borrowing history, current active books, overdue fine statements, and library card credentials.
+        </p>
+      </div>
+
+      <!-- Member Switcher Dropdown -->
+      <div class="flex items-center gap-3">
+        <label for="memberHistorySelect" class="text-xs text-gray-400 whitespace-nowrap hidden sm:inline">Viewing Member:</label>
+        <select id="memberHistorySelect" class="bg-black/60 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400">
+          <!-- Filled by JS -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Member Credentials Card & Circulation KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      <!-- Member Identity Badge -->
+      <div class="glass-panel p-5 rounded-3xl border-emerald-500/20 md:col-span-1">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-xl font-bold">
+            <i class="fa-solid fa-id-card"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm" id="cardMemberName">Hamza Khan</h3>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30" id="cardMemberType">Student</span>
+          </div>
+        </div>
+        <div class="space-y-1 text-xs text-gray-400">
+          <div>Email: <span class="text-white font-mono" id="cardMemberEmail">hamza.khan@college.edu</span></div>
+          <div>Phone: <span class="text-white font-mono" id="cardMemberPhone">+92 300 5551234</span></div>
+          <div>Member ID: <span class="text-emerald-400 font-mono" id="cardMemberId">#1</span></div>
+        </div>
+      </div>
+
+      <!-- Active Loans Count (Max 3 Rule) -->
+      <div class="glass-panel p-5 rounded-3xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-gray-400">
+          <span class="font-bold uppercase tracking-wider">Active Book Loans</span>
+          <i class="fa-solid fa-book text-emerald-400"></i>
+        </div>
+        <div>
+          <div class="font-serif-title text-3xl font-extrabold text-white" id="statMemberActiveLoans">3 / 3</div>
+          <div class="text-[11px] text-amber-400 mt-1" id="statQuotaWarning">Maximum 3 Books Limit Reached</div>
+        </div>
+      </div>
+
+      <!-- Lifetime Borrowed Count -->
+      <div class="glass-panel p-5 rounded-3xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-gray-400">
+          <span class="font-bold uppercase tracking-wider">Lifetime Borrowed</span>
+          <i class="fa-solid fa-clock-rotate-left text-blue-400"></i>
+        </div>
+        <div>
+          <div class="font-serif-title text-3xl font-extrabold text-blue-400" id="statLifetimeLoans">4 Titles</div>
+          <div class="text-[11px] text-gray-400 mt-1">Total books checked out</div>
+        </div>
+      </div>
+
+      <!-- Fines Incurred / Pending -->
+      <div class="glass-panel p-5 rounded-3xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-gray-400">
+          <span class="font-bold uppercase tracking-wider">Pending Late Fines</span>
+          <i class="fa-solid fa-coins text-rose-400"></i>
+        </div>
+        <div>
+          <div class="font-serif-title text-3xl font-extrabold text-rose-400" id="statPendingFines">90</div>
+          <div class="text-[11px] text-gray-400 mt-1">Calculated at 10 / day late</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Books Currently Held Section -->
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-book-bookmark text-emerald-400"></i> Currently Checked Out Books (Active Loans)
+        </h3>
+        <span class="text-xs text-gray-400 font-mono">Enforcing Business Rule 1 (Max 3)</span>
+      </div>
+
+      <div id="activeBooksContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Lifetime Borrowing History Table -->
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4">
+      <h3 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-timeline text-emerald-400"></i> Lifetime Historical Loans & Returned Books
+      </h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left">
+          <thead>
+            <tr class="border-b border-white/10 text-gray-400 uppercase text-[10px]">
+              <th class="py-2.5">Loan ID</th>
+              <th class="py-2.5">Book Title</th>
+              <th class="py-2.5">Issue Date</th>
+              <th class="py-2.5">Due Date</th>
+              <th class="py-2.5">Return Date</th>
+              <th class="py-2.5 text-right">Fine Settled</th>
+              <th class="py-2.5 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="memberHistoryTableBody" class="divide-y divide-white/5 text-gray-300">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer id="global-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeMemberId = 1;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLibraryHeader('history');
+      renderLibraryFooter();
+      initHistoryPage();
+    });
+
+    function initHistoryPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramMemberId = urlParams.get('member_id');
+
+      const members = window.libDB.getMembers();
+      const select = document.getElementById('memberHistorySelect');
+      select.innerHTML = '';
+
+      members.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.member_id;
+        opt.textContent = `${m.name} (${m.member_type})`;
+        select.appendChild(opt);
+      });
+
+      if (paramMemberId && members.find(m => m.member_id == paramMemberId)) {
+        activeMemberId = paramMemberId;
+      } else {
+        const currentUser = window.libDB.getCurrentUser();
+        if (currentUser.member_id) activeMemberId = currentUser.member_id;
+      }
+
+      select.value = activeMemberId;
+
+      select.addEventListener('change', (e) => {
+        activeMemberId = e.target.value;
+        loadMemberHistory(activeMemberId);
+      });
+
+      loadMemberHistory(activeMemberId);
+    }
+
+    function loadMemberHistory(memberId) {
+      const member = window.libDB.getMemberById(memberId);
+      if (!member) return;
+
+      const allLoans = window.libDB.getLoans().filter(l => l.member_id == memberId);
+      const activeLoans = allLoans.filter(l => l.return_date === null);
+      const completedLoans = allLoans.filter(l => l.return_date !== null);
+
+      // Identity Card
+      document.getElementById('cardMemberName').textContent = member.name;
+      document.getElementById('cardMemberType').textContent = member.member_type;
+      document.getElementById('cardMemberEmail').textContent = member.email;
+      document.getElementById('cardMemberPhone').textContent = member.phone;
+      document.getElementById('cardMemberId').textContent = `#${member.member_id}`;
+
+      // KPIs
+      document.getElementById('statMemberActiveLoans').textContent = `${activeLoans.length} / 3`;
+      const quotaWarning = document.getElementById('statQuotaWarning');
+      if (activeLoans.length >= 3) {
+        quotaWarning.textContent = 'Quota Full (Max 3 Books Limit)';
+        quotaWarning.className = 'text-[11px] text-rose-400 mt-1 font-bold';
+      } else {
+        quotaWarning.textContent = `${3 - activeLoans.length} more books allowed`;
+        quotaWarning.className = 'text-[11px] text-emerald-400 mt-1';
+      }
+
+      document.getElementById('statLifetimeLoans').textContent = `${allLoans.length} Titles`;
+
+      // Calculate total pending overdue fines
+      let pendingFines = 0;
+      activeLoans.forEach(l => {
+        const { fine } = window.libDB.calculateFine(l.due_date);
+        pendingFines += fine;
+      });
+      document.getElementById('statPendingFines').textContent = pendingFines > 0 ? `${pendingFines} (Overdue)` : '0 (Clear)';
+
+      // Render Active Cards
+      renderActiveLoanCards(activeLoans);
+
+      // Render History Table
+      renderHistoryTable(allLoans);
+    }
+
+    function renderActiveLoanCards(activeLoans) {
+      const container = document.getElementById('activeBooksContainer');
+      container.innerHTML = '';
+
+      if (activeLoans.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-8 text-xs text-gray-400">
+            <i class="fa-solid fa-circle-check text-emerald-400 text-lg mb-2 block"></i>
+            This member currently has 0 books checked out. Free to borrow up to 3 books.
+          </div>
+        `;
+        return;
+      }
+
+      activeLoans.forEach(l => {
+        const book = window.libDB.getBookById(l.book_id) || { title: 'Book Title', cover_image: '' };
+        const { daysLate, fine } = window.libDB.calculateFine(l.due_date);
+        const isOverdue = daysLate > 0;
+
+        const card = document.createElement('div');
+        card.className = `glass-card p-4 rounded-2xl border ${isOverdue ? 'border-rose-500/40 bg-rose-500/5' : 'border-white/10'} space-y-3`;
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <img src="${book.cover_image}" class="w-12 h-16 object-cover rounded-lg border border-white/10 shadow">
+            <div class="truncate space-y-0.5">
+              <h4 class="font-bold text-xs text-white truncate">${book.title}</h4>
+              <div class="text-[10px] text-gray-400">Loan #${l.loan_id}</div>
+              <div class="text-[10px] font-mono ${isOverdue ? 'text-rose-400 font-bold' : 'text-emerald-400'}">
+                ${isOverdue ? `OVERDUE: ${daysLate} Days (Fine: ${fine})` : `Due: ${l.due_date}`}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-white/10 text-[11px]">
+            <span class="text-gray-400">Issued: ${l.issue_date}</span>
+            <a href="return-book.html?loan_id=${l.loan_id}" class="btn-emerald py-1 px-3 rounded-lg text-[10px] font-bold">
+              Return Book &rarr;
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderHistoryTable(allLoans) {
+      const tbody = document.getElementById('memberHistoryTableBody');
+      tbody.innerHTML = '';
+
+      if (allLoans.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-gray-400">No loan records found for this member (Never borrowed a book).</td></tr>`;
+        return;
+      }
+
+      allLoans.forEach(l => {
+        const book = window.libDB.getBookById(l.book_id) || { title: 'Book Title' };
+        const isReturned = l.return_date !== null;
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/5 transition-colors';
+        tr.innerHTML = `
+          <td class="py-2.5 font-mono text-emerald-400 font-bold">#${l.loan_id}</td>
+          <td class="py-2.5 font-bold text-white max-w-xs truncate">${book.title}</td>
+          <td class="py-2.5 font-mono text-gray-300">${l.issue_date}</td>
+          <td class="py-2.5 font-mono text-gray-300">${l.due_date}</td>
+          <td class="py-2.5 font-mono ${isReturned ? 'text-emerald-300' : 'text-amber-400 font-bold'}">
+            ${isReturned ? l.return_date : 'Currently Held'}
+          </td>
+          <td class="py-2.5 text-right font-mono font-bold ${l.fine_amount > 0 ? 'text-rose-400' : 'text-gray-400'}">
+            ${l.fine_amount > 0 ? l.fine_amount : '0'}
+          </td>
+          <td class="py-2.5 text-center">
+            ${isReturned ? `
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                Returned
+              </span>
+            ` : `
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                Active Loan
+              </span>
+            `}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>

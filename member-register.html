@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX Library - College Library Management System | Page 4: Member Registration</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b1329] text-gray-100 antialiased selection:bg-emerald-500 selection:text-black">
+
+  <!-- Global Header Navigation -->
+  <header id="global-nav"></header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    
+    <!-- Page Header -->
+    <div class="pb-6 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          PAGE 4 OF 8: MEMBER REGISTRATION & MEMBERSHIP MANAGEMENT
+        </div>
+        <h1 class="font-serif-title text-3xl sm:text-4xl font-extrabold text-white">
+          Register Student & Faculty Members
+        </h1>
+        <p class="text-xs text-gray-400 mt-1">
+          Relational insertion into <code class="text-emerald-300">Members</code> table with <code class="text-emerald-300">email (UNIQUE)</code> and <code class="text-emerald-300">member_type CHECK IN ('Student', 'Faculty')</code>.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="issue-book.html" class="btn-emerald px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-hand-holding-hand"></i> Proceed to Issue Book
+        </a>
+      </div>
+    </div>
+
+    <!-- Registration Form Panel -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Form (7 Cols) -->
+      <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-3xl space-y-6">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-user-plus text-emerald-400"></i> New Member Profile
+          </h2>
+          <span class="text-xs text-emerald-300 font-mono">Student / Faculty Enrolment</span>
+        </div>
+
+        <form id="memberForm" class="space-y-4">
+          
+          <!-- Full Name -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              Full Legal Name <span class="text-rose-400">*</span>
+            </label>
+            <input type="text" id="memName" placeholder="e.g. Daniyal Siddiqui" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+          </div>
+
+          <!-- Email (UNIQUE) -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+              <span>Institutional Email Address <span class="text-rose-400">*</span></span>
+              <span class="text-[10px] text-emerald-400 font-mono">UNIQUE PK</span>
+            </label>
+            <input type="email" id="memEmail" placeholder="daniyal.siddiqui@college.edu" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              Contact Phone Number <span class="text-rose-400">*</span>
+            </label>
+            <input type="tel" id="memPhone" placeholder="+92 300 1234567" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+          </div>
+
+          <!-- Member Type Radio Cards: Student vs Faculty (CHECK constraint) -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+              Membership Category (<code class="text-emerald-300">member_type CHECK IN ('Student', 'Faculty')</code>)
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="cursor-pointer p-4 rounded-2xl border border-white/10 bg-white/5 hover:border-emerald-400/50 flex items-center gap-3 transition-all has-[:checked]:border-emerald-400 has-[:checked]:bg-emerald-500/10">
+                <input type="radio" name="memberTypeRadio" value="Student" checked class="accent-emerald-500 w-4 h-4">
+                <div>
+                  <span class="font-bold text-xs text-white block">Student Member</span>
+                  <span class="text-[10px] text-gray-400">Undergraduate / Graduate</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer p-4 rounded-2xl border border-white/10 bg-white/5 hover:border-emerald-400/50 flex items-center gap-3 transition-all has-[:checked]:border-emerald-400 has-[:checked]:bg-emerald-500/10">
+                <input type="radio" name="memberTypeRadio" value="Faculty" class="accent-emerald-500 w-4 h-4">
+                <div>
+                  <span class="font-bold text-xs text-white block">Faculty Member</span>
+                  <span class="text-[10px] text-gray-400">Professor / Department Staff</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Join Date -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              Membership Join Date
+            </label>
+            <input type="date" id="memJoinDate" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono">
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="w-full btn-emerald py-3.5 px-6 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-user-check"></i> Register Member to Database
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Quick Info & Business Rules (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <div class="glass-panel p-6 rounded-3xl space-y-4 border-emerald-500/30">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-emerald-400"></i> Member Circulation Rights
+          </h3>
+          <ul class="text-xs text-gray-300 space-y-2.5 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-1"></i>
+              <span><strong>Max 3 Books Rule:</strong> Every registered member is permitted a maximum of 3 concurrent active loans.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-1"></i>
+              <span><strong>Automatic Late Fine:</strong> Overdue returns incur an automatic fine of 10 currency units per day late.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-1"></i>
+              <span><strong>Unique Email Verification:</strong> Institutional email prevents duplicate student accounts.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="glass-panel p-6 rounded-3xl text-center space-y-2">
+          <div class="text-[11px] uppercase font-bold text-gray-400">Total Registered Members</div>
+          <div class="font-serif-title text-4xl font-extrabold text-emerald-400" id="totalMembersCount">5</div>
+          <div class="text-[11px] text-gray-400">Active College Library Community</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Registered Members Roster Table -->
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+        <h3 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-users text-emerald-400"></i> Registered Members Roster
+        </h3>
+        
+        <div class="flex items-center gap-2 text-xs">
+          <select id="memberTypeFilter" onchange="renderMembersTable()" class="bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white">
+            <option value="all">All Members (Students & Faculty)</option>
+            <option value="Student">Only Students</option>
+            <option value="Faculty">Only Faculty</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left">
+          <thead>
+            <tr class="border-b border-white/10 text-gray-400 uppercase text-[10px]">
+              <th class="py-2.5">Member ID</th>
+              <th class="py-2.5">Name</th>
+              <th class="py-2.5">Email (UNIQUE)</th>
+              <th class="py-2.5">Phone</th>
+              <th class="py-2.5">Member Type</th>
+              <th class="py-2.5">Active Loans</th>
+              <th class="py-2.5">Join Date</th>
+              <th class="py-2.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="membersTableBody" class="divide-y divide-white/5 text-gray-300">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer id="global-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLibraryHeader('member-reg');
+      renderLibraryFooter();
+      initMemberPage();
+    });
+
+    function initMemberPage() {
+      // Set today's date
+      document.getElementById('memJoinDate').value = new Date().toISOString().split('T')[0];
+
+      document.getElementById('memberForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const memberData = {
+          name: document.getElementById('memName').value,
+          email: document.getElementById('memEmail').value,
+          phone: document.getElementById('memPhone').value,
+          member_type: document.querySelector('input[name="memberTypeRadio"]:checked').value,
+          join_date: document.getElementById('memJoinDate').value
+        };
+
+        try {
+          const m = window.libDB.registerMember(memberData);
+          alert(`Member "${m.name}" successfully registered as ${m.member_type}!`);
+          document.getElementById('memberForm').reset();
+          document.getElementById('memJoinDate').value = new Date().toISOString().split('T')[0];
+          renderMembersTable();
+        } catch (err) {
+          alert('Registration Error: ' + err.message);
+        }
+      });
+
+      renderMembersTable();
+    }
+
+    function renderMembersTable() {
+      const members = window.libDB.getMembers();
+      const filter = document.getElementById('memberTypeFilter').value;
+      const tbody = document.getElementById('membersTableBody');
+      tbody.innerHTML = '';
+
+      document.getElementById('totalMembersCount').textContent = members.length;
+
+      let filtered = members;
+      if (filter !== 'all') {
+        filtered = members.filter(m => m.member_type === filter);
+      }
+
+      filtered.forEach(m => {
+        const activeCount = window.libDB.getActiveLoanCount(m.member_id);
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/5 transition-colors';
+        tr.innerHTML = `
+          <td class="py-2.5 font-mono text-emerald-400 font-bold">#${m.member_id}</td>
+          <td class="py-2.5 font-bold text-white">${m.name}</td>
+          <td class="py-2.5 text-gray-300 font-mono">${m.email}</td>
+          <td class="py-2.5 text-gray-300 font-mono">${m.phone}</td>
+          <td class="py-2.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${m.member_type === 'Faculty' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40' : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'}">
+              ${m.member_type}
+            </span>
+          </td>
+          <td class="py-2.5">
+            <span class="font-bold ${activeCount >= 3 ? 'text-rose-400' : 'text-emerald-400'}">
+              ${activeCount} / 3 Books
+            </span>
+          </td>
+          <td class="py-2.5 text-gray-400 font-mono">${m.join_date}</td>
+          <td class="py-2.5 text-right">
+            <a href="issue-book.html?member_id=${m.member_id}" class="btn-secondary px-2.5 py-1 rounded-lg text-[10px] font-bold text-emerald-400 hover:border-emerald-400 mr-2">
+              Issue Book
+            </a>
+            <a href="borrowing-history.html?member_id=${m.member_id}" class="text-gray-400 hover:text-white text-[11px]">
+              History &rarr;
+            </a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>

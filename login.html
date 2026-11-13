@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX Library - College Library Management System | Page 1: Login</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b1329] text-gray-100 antialiased selection:bg-emerald-500 selection:text-black min-h-screen flex flex-col justify-between">
+
+  <!-- Global Header Navigation -->
+  <header id="global-nav"></header>
+
+  <main class="max-w-4xl mx-auto px-4 py-12 w-full">
+    
+    <div class="text-center space-y-3 mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-emerald-400 font-semibold">
+        PAGE 1 OF 8 &bull; USER AUTHENTICATION & ROLE SWITCHER
+      </div>
+      <h1 class="font-serif-title text-3xl sm:text-4xl font-extrabold text-white">
+        College Library Portal Sign-In
+      </h1>
+      <p class="text-xs text-gray-400 max-w-md mx-auto">
+        Sign in to access circulation services, member borrowing history, or administrative cataloging.
+      </p>
+    </div>
+
+    <!-- Login Box -->
+    <div class="glass-panel p-6 sm:p-10 rounded-3xl border border-white/10 shadow-2xl max-w-xl mx-auto space-y-6">
+      
+      <!-- User Type Selector: Librarian vs Student/Faculty -->
+      <div class="grid grid-cols-2 gap-3 p-1.5 bg-black/50 rounded-2xl border border-white/10 text-xs font-bold">
+        <button id="roleBtnLibrarian" onclick="setLoginRole('Librarian')" class="py-2.5 rounded-xl transition-all bg-emerald-500 text-black flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-shield"></i> Librarian (Admin)
+        </button>
+        <button id="roleBtnMember" onclick="setLoginRole('Member')" class="py-2.5 rounded-xl transition-all text-gray-400 hover:text-white flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-graduate"></i> Member (Student/Faculty)
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form id="loginForm" class="space-y-4">
+        
+        <!-- Member Quick Select (Shown when Member role selected) -->
+        <div id="memberSelectWrapper" class="hidden">
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+            Select Member Account (From <code class="text-emerald-300">Members</code> table)
+          </label>
+          <select id="loginMemberSelect" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <!-- Email Field -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+            Institutional Email Address <span class="text-rose-400">*</span>
+          </label>
+          <input type="email" id="loginEmail" value="librarian@college.edu" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+            Password <span class="text-rose-400">*</span>
+          </label>
+          <input type="password" id="loginPassword" value="library123" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+        </div>
+
+        <button type="submit" class="w-full btn-emerald py-3.5 px-6 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Library System
+        </button>
+
+      </form>
+
+      <!-- Quick Demo Credentials Hint -->
+      <div class="bg-white/5 p-4 rounded-2xl border border-white/5 text-xs text-gray-400 space-y-1">
+        <div class="font-bold text-white flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-emerald-400"></i> Demo Accounts:
+        </div>
+        <div>&bull; <strong>Librarian:</strong> <code class="text-emerald-300">librarian@college.edu</code> (Full admin circulation access)</div>
+        <div>&bull; <strong>Student:</strong> <code class="text-emerald-300">hamza.khan@college.edu</code> (View active loans & history)</div>
+        <div>&bull; <strong>Faculty:</strong> <code class="text-emerald-300">sarah.ahmed@college.edu</code></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer id="global-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeRole = 'Librarian';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLibraryHeader('login');
+      renderLibraryFooter();
+      initLoginPage();
+    });
+
+    function setLoginRole(role) {
+      activeRole = role;
+      const btnLib = document.getElementById('roleBtnLibrarian');
+      const btnMem = document.getElementById('roleBtnMember');
+      const memberWrapper = document.getElementById('memberSelectWrapper');
+      const emailInput = document.getElementById('loginEmail');
+
+      if (role === 'Librarian') {
+        btnLib.className = 'py-2.5 rounded-xl transition-all bg-emerald-500 text-black flex items-center justify-center gap-2';
+        btnMem.className = 'py-2.5 rounded-xl transition-all text-gray-400 hover:text-white flex items-center justify-center gap-2';
+        memberWrapper.classList.add('hidden');
+        emailInput.value = 'librarian@college.edu';
+      } else {
+        btnMem.className = 'py-2.5 rounded-xl transition-all bg-emerald-500 text-black flex items-center justify-center gap-2';
+        btnLib.className = 'py-2.5 rounded-xl transition-all text-gray-400 hover:text-white flex items-center justify-center gap-2';
+        memberWrapper.classList.remove('hidden');
+        const members = window.libDB.getMembers();
+        if (members.length > 0) emailInput.value = members[0].email;
+      }
+    }
+
+    function initLoginPage() {
+      const members = window.libDB.getMembers();
+      const select = document.getElementById('loginMemberSelect');
+      select.innerHTML = '';
+
+      members.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.email;
+        opt.textContent = `${m.name} (${m.member_type} - ${m.email})`;
+        select.appendChild(opt);
+      });
+
+      select.addEventListener('change', (e) => {
+        document.getElementById('loginEmail').value = e.target.value;
+      });
+
+      document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+
+        if (activeRole === 'Librarian') {
+          window.libDB.setCurrentUser({ role: 'Librarian', name: 'Chief Librarian' });
+          alert('Signed in as Librarian (Admin). Redirecting to catalogue...');
+          window.location.href = 'index.html';
+        } else {
+          const m = members.find(item => item.email.toLowerCase() === email.toLowerCase()) || { name: 'Student', member_type: 'Student', member_id: 1 };
+          window.libDB.setCurrentUser({ role: m.member_type, name: m.name, member_id: m.member_id, email: m.email });
+          alert(`Signed in as ${m.name} (${m.member_type}). Redirecting to borrowing history...`);
+          window.location.href = 'borrowing-history.html';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX Library - College Library Management System | Page 5: Issue Book</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b1329] text-gray-100 antialiased selection:bg-emerald-500 selection:text-black">
+
+  <!-- Global Header Navigation -->
+  <header id="global-nav"></header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    
+    <!-- Page Header -->
+    <div class="pb-6 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          PAGE 5 OF 8: ISSUE BOOK CIRCULATION & TRANSACTION ENGINE
+        </div>
+        <h1 class="font-serif-title text-3xl sm:text-4xl font-extrabold text-white">
+          Circulation Desk: Issue Book
+        </h1>
+        <p class="text-xs text-gray-400 mt-1">
+          Enforces <strong>Max 3 Books per Member</strong> and <strong>Available Copies &gt; 0</strong> with atomic transaction execution.
+        </p>
+      </div>
+
+      <!-- Transaction Architecture Badge -->
+      <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 border-emerald-500/20 text-xs">
+        <i class="fa-solid fa-code-commit text-emerald-400 text-lg"></i>
+        <div>
+          <div class="font-bold text-white">Atomic Transaction Active</div>
+          <div class="text-[10px] text-gray-400">Insert to <code class="text-emerald-300">Loans</code> + Decrement <code class="text-emerald-300">available_copies</code></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Circulation Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Issue Form (7 Cols) -->
+      <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-3xl space-y-6">
+        
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-hand-holding-hand text-emerald-400"></i> Issue Book Authorization
+          </h2>
+          <span class="text-xs text-emerald-300 font-mono">Step 1 of Circulation</span>
+        </div>
+
+        <form id="issueBookForm" class="space-y-5">
+          
+          <!-- Select Book -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+              <span>Select Book from Catalogue <span class="text-rose-400">*</span></span>
+              <span class="text-[10px] text-emerald-400 font-mono" id="selectedBookCopiesTag">In Stock</span>
+            </label>
+            <select id="issueBookSelect" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <!-- Select Member -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+              <span>Select Registered Member <span class="text-rose-400">*</span></span>
+              <span class="text-[10px] text-amber-300 font-mono" id="selectedMemberQuotaTag">0 / 3 Active Loans</span>
+            </label>
+            <select id="issueMemberSelect" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <!-- Date Fields -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar-check text-emerald-400"></i> Issue Date
+              </label>
+              <input type="date" id="issueDate" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono" required>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar-xmark text-amber-400"></i> Due Date (14 Days Standard)
+              </label>
+              <input type="date" id="issueDueDate" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono" required>
+            </div>
+          </div>
+
+          <!-- Live Rule Conflict / Warning Box -->
+          <div id="ruleAlertBox" class="hidden p-4 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-3">
+            <i class="fa-solid fa-triangle-exclamation text-base mt-0.5 text-rose-400"></i>
+            <div>
+              <strong class="font-bold text-rose-200 block" id="ruleAlertTitle">Constraint Violation</strong>
+              <span id="ruleAlertMessage">Error description...</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="btnSubmitIssue" class="w-full btn-emerald py-4 px-6 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20">
+            <i class="fa-solid fa-check"></i> Execute Issue Transaction (Commit)
+          </button>
+
+        </form>
+
+      </div>
+
+      <!-- Selected Book & Member Verification Card (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <div class="glass-panel p-6 rounded-3xl space-y-4 border border-emerald-500/20">
+          <h3 class="font-serif-title text-base font-bold text-white border-b border-white/10 pb-3 flex items-center justify-between">
+            <span>Transaction Payload Preview</span>
+            <span class="text-xs text-emerald-400 font-mono">ACID Compliant</span>
+          </h3>
+
+          <!-- Book Summary Card -->
+          <div class="flex items-center gap-3 bg-black/40 p-3 rounded-2xl border border-white/10">
+            <img id="issueCarCover" src="" class="w-14 h-18 object-cover rounded-xl border border-white/10 shadow">
+            <div class="truncate space-y-0.5">
+              <h4 id="issueBookTitleText" class="font-bold text-xs text-white truncate">Book Title</h4>
+              <div class="text-[11px] text-gray-400 truncate" id="issueBookAuthorText">Author</div>
+              <div class="text-[10px] text-emerald-400 font-mono" id="issueBookCopiesText">Available: 3 copies</div>
+            </div>
+          </div>
+
+          <!-- Member Summary Card -->
+          <div class="bg-black/40 p-3.5 rounded-2xl border border-white/10 space-y-1.5 text-xs">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Borrower Verification</div>
+            <div class="flex justify-between text-white font-bold">
+              <span id="issueMemberNameText">Member Name</span>
+              <span id="issueMemberTypeText" class="text-xs text-emerald-300 font-normal">Student</span>
+            </div>
+            <div class="text-gray-400 text-[11px]" id="issueMemberEmailText">member@college.edu</div>
+            <div class="flex justify-between border-t border-white/10 pt-2 text-[11px]">
+              <span class="text-gray-400">Active Borrowed Books:</span>
+              <span class="font-bold text-amber-300" id="issueMemberActiveCountText">1 / 3 Maximum</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-white/5 text-[11px] text-gray-400 space-y-1">
+            <div>&bull; Late Fee Rule: <strong class="text-white">10 per day late</strong> past Due Date</div>
+            <div>&bull; Transaction auto decrements: <code class="text-emerald-300">available_copies - 1</code></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Live Issued Books Ledger -->
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4">
+      <h3 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-list-check text-emerald-400"></i> Currently Issued Books (Awaiting Return)
+      </h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left">
+          <thead>
+            <tr class="border-b border-white/10 text-gray-400 uppercase text-[10px]">
+              <th class="py-2.5">Loan ID</th>
+              <th class="py-2.5">Book Title</th>
+              <th class="py-2.5">Borrower Name</th>
+              <th class="py-2.5">Member Type</th>
+              <th class="py-2.5">Issue Date</th>
+              <th class="py-2.5">Due Date</th>
+              <th class="py-2.5">Status & Fine</th>
+              <th class="py-2.5 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="issuedBooksTableBody" class="divide-y divide-white/5 text-gray-300">
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer id="global-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLibraryHeader('issue-book');
+      renderLibraryFooter();
+      initIssuePage();
+    });
+
+    function initIssuePage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const preselectBookId = urlParams.get('book_id');
+      const preselectMemberId = urlParams.get('member_id');
+
+      // 1. Populate Books Select
+      const books = window.libDB.getBooks();
+      const bookSelect = document.getElementById('issueBookSelect');
+      bookSelect.innerHTML = '';
+
+      books.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.book_id;
+        opt.textContent = `${b.title} (Available: ${b.available_copies}/${b.total_copies})`;
+        if (b.available_copies <= 0) {
+          opt.textContent += ' [OUT OF STOCK]';
+        }
+        bookSelect.appendChild(opt);
+      });
+
+      if (preselectBookId) bookSelect.value = preselectBookId;
+
+      // 2. Populate Members Select
+      const members = window.libDB.getMembers();
+      const memSelect = document.getElementById('issueMemberSelect');
+      memSelect.innerHTML = '';
+
+      members.forEach(m => {
+        const count = window.libDB.getActiveLoanCount(m.member_id);
+        const opt = document.createElement('option');
+        opt.value = m.member_id;
+        opt.textContent = `${m.name} (${m.member_type} - Active Loans: ${count}/3)`;
+        if (count >= 3) {
+          opt.textContent += ' [MAX 3 BOOKS LIMIT REACHED]';
+        }
+        memSelect.appendChild(opt);
+      });
+
+      if (preselectMemberId) memSelect.value = preselectMemberId;
+
+      // 3. Set Dates (Today & +14 days)
+      const today = new Date();
+      const due = new Date(today);
+      due.setDate(due.getDate() + 14);
+
+      const toISO = d => d.toISOString().split('T')[0];
+      document.getElementById('issueDate').value = toISO(today);
+      document.getElementById('issueDueDate').value = toISO(due);
+
+      bookSelect.addEventListener('change', updatePayloadPreview);
+      memSelect.addEventListener('change', updatePayloadPreview);
+      document.getElementById('issueDate').addEventListener('change', updatePayloadPreview);
+      document.getElementById('issueDueDate').addEventListener('change', updatePayloadPreview);
+
+      updatePayloadPreview();
+      renderIssuedTable();
+
+      // Submit
+      document.getElementById('issueBookForm').addEventListener('submit', handleIssueSubmit);
+    }
+
+    function updatePayloadPreview() {
+      const bookId = document.getElementById('issueBookSelect').value;
+      const memberId = document.getElementById('issueMemberSelect').value;
+      const issueDate = document.getElementById('issueDate').value;
+      const dueDate = document.getElementById('issueDueDate').value;
+
+      const book = window.libDB.getBookById(bookId);
+      const member = window.libDB.getMemberById(memberId);
+
+      const alertBox = document.getElementById('ruleAlertBox');
+      const submitBtn = document.getElementById('btnSubmitIssue');
+
+      if (book) {
+        document.getElementById('issueCarCover').src = book.cover_image;
+        document.getElementById('issueBookTitleText').textContent = book.title;
+        document.getElementById('issueBookAuthorText').textContent = `By ${book.author}`;
+        document.getElementById('issueBookCopiesText').textContent = `Available: ${book.available_copies} of ${book.total_copies}`;
+        document.getElementById('selectedBookCopiesTag').textContent = `${book.available_copies} Copies Free`;
+      }
+
+      let activeLoans = 0;
+      if (member) {
+        activeLoans = window.libDB.getActiveLoanCount(member.member_id);
+        document.getElementById('issueMemberNameText').textContent = member.name;
+        document.getElementById('issueMemberTypeText').textContent = member.member_type;
+        document.getElementById('issueMemberEmailText').textContent = member.email;
+        document.getElementById('issueMemberActiveCountText').textContent = `${activeLoans} / 3 Books`;
+        document.getElementById('selectedMemberQuotaTag').textContent = `${activeLoans}/3 Limit`;
+      }
+
+      // Check Business Rule 1 & Rule 2
+      let hasError = false;
+      let errorTitle = '';
+      let errorMsg = '';
+
+      if (book && book.available_copies <= 0) {
+        hasError = true;
+        errorTitle = 'Business Rule 2 Violation: Out of Stock';
+        errorMsg = `Book "${book.title}" has 0 available copies in stock. Cannot be issued until a copy is returned.`;
+      } else if (member && activeLoans >= 3) {
+        hasError = true;
+        errorTitle = 'Business Rule 1 Violation: Quota Exceeded';
+        errorMsg = `Member "${member.name}" already has 3 active loans. Under college library policy, a member can hold at most 3 books at once.`;
+      } else if (new Date(dueDate) <= new Date(issueDate)) {
+        hasError = true;
+        errorTitle = 'Invalid Date Constraint';
+        errorMsg = 'Due date must be strictly after the issue date (due_date > issue_date).';
+      }
+
+      if (hasError) {
+        alertBox.classList.remove('hidden');
+        document.getElementById('ruleAlertTitle').textContent = errorTitle;
+        document.getElementById('ruleAlertMessage').textContent = errorMsg;
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        alertBox.classList.add('hidden');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    function handleIssueSubmit(e) {
+      e.preventDefault();
+
+      const payload = {
+        book_id: document.getElementById('issueBookSelect').value,
+        member_id: document.getElementById('issueMemberSelect').value,
+        issue_date: document.getElementById('issueDate').value,
+        due_date: document.getElementById('issueDueDate').value
+      };
+
+      try {
+        const result = window.libDB.issueBookTransaction(payload);
+        alert(`Transaction Committed Successfully!\nBook: "${result.book.title}" issued to ${result.member.name}.\nRemaining available copies: ${result.remainingCopies}.`);
+        initIssuePage();
+      } catch (err) {
+        alert('Transaction Aborted: ' + err.message);
+      }
+    }
+
+    function renderIssuedTable() {
+      const issued = window.libDB.queryCurrentlyIssuedBooks();
+      const tbody = document.getElementById('issuedBooksTableBody');
+      tbody.innerHTML = '';
+
+      issued.forEach(item => {
+        const isOverdue = item.days_late > 0;
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/5 transition-colors';
+        tr.innerHTML = `
+          <td class="py-2.5 font-mono text-emerald-400 font-bold">#${item.loan_id}</td>
+          <td class="py-2.5 font-bold text-white max-w-xs truncate">${item.book_title}</td>
+          <td class="py-2.5 text-gray-200">${item.member_name}</td>
+          <td class="py-2.5 text-gray-400">${item.member_type}</td>
+          <td class="py-2.5 font-mono text-gray-300">${item.issue_date}</td>
+          <td class="py-2.5 font-mono ${isOverdue ? 'text-rose-400 font-bold' : 'text-gray-300'}">${item.due_date}</td>
+          <td class="py-2.5">
+            ${isOverdue ? `
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                ${item.days_late} Days Overdue (Fine: ${item.current_fine})
+              </span>
+            ` : `
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                On Time (0 Fine)
+              </span>
+            `}
+          </td>
+          <td class="py-2.5 text-right">
+            <a href="return-book.html?loan_id=${item.loan_id}" class="btn-emerald py-1 px-2.5 rounded-lg text-[10px] font-bold">
+              Return Book &rarr;
+            </a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>

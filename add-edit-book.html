@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX Library - College Library Management System | Page 3: Add / Edit Books</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b1329] text-gray-100 antialiased selection:bg-emerald-500 selection:text-black">
+
+  <!-- Global Header Navigation -->
+  <header id="global-nav"></header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    
+    <!-- Page Header -->
+    <div class="pb-6 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          PAGE 3 OF 8: ADD / EDIT BOOKS & CUSTOM PICTURES
+        </div>
+        <h1 class="font-serif-title text-3xl sm:text-4xl font-extrabold text-white" id="pageHeading">
+          Manage College Book Repository
+        </h1>
+        <p class="text-xs text-gray-400 mt-1">
+          Insert new academic titles or update existing records in the <code class="text-emerald-300">Books</code> table with custom cover photos.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="btn-secondary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+          <i class="fa-solid fa-book-open"></i> View In Catalogue
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Grid: Form (8 Cols) & Live Cover Preview (4 Cols) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- LEFT: Form -->
+      <div class="lg:col-span-8 glass-panel p-6 sm:p-8 rounded-3xl space-y-6">
+        
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 class="font-serif-title text-xl font-bold text-white flex items-center gap-2" id="formTitle">
+            <i class="fa-solid fa-square-plus text-emerald-400"></i> Book Metadata & Inventory Details
+          </h2>
+          <span class="text-xs text-emerald-300 font-mono">Librarian Access</span>
+        </div>
+
+        <!-- Quick Preset Buttons -->
+        <div class="p-3 bg-white/5 rounded-2xl border border-white/5 space-y-2">
+          <span class="text-xs font-bold text-emerald-400 block">
+            <i class="fa-solid fa-bolt mr-1"></i> Quick Autofill Academic Book Samples:
+          </span>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <button type="button" onclick="loadSample('python')" class="px-2.5 py-1 rounded-lg bg-black/50 hover:bg-emerald-500 hover:text-black border border-white/10 text-gray-300 transition-colors">
+              + Python Crash Course
+            </button>
+            <button type="button" onclick="loadSample('cleanCode')" class="px-2.5 py-1 rounded-lg bg-black/50 hover:bg-emerald-500 hover:text-black border border-white/10 text-gray-300 transition-colors">
+              + Clean Code (Robert Martin)
+            </button>
+            <button type="button" onclick="loadSample('aiModern')" class="px-2.5 py-1 rounded-lg bg-black/50 hover:bg-emerald-500 hover:text-black border border-white/10 text-gray-300 transition-colors">
+              + AI: Modern Approach (Russell)
+            </button>
+          </div>
+        </div>
+
+        <form id="bookForm" class="space-y-4">
+          <input type="hidden" id="bookIdInput">
+
+          <!-- Book Title -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              Book Name / Full Title <span class="text-rose-400">*</span>
+            </label>
+            <input type="text" id="bookTitle" placeholder="e.g. Clean Architecture: A Craftsman's Guide" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Author -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+                Author(s) <span class="text-rose-400">*</span>
+              </label>
+              <input type="text" id="bookAuthor" placeholder="e.g. Robert C. Martin" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+            </div>
+
+            <!-- ISBN (UNIQUE) -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>ISBN Code <span class="text-rose-400">*</span></span>
+                <span class="text-[10px] text-emerald-400 font-mono">UNIQUE PK</span>
+              </label>
+              <input type="text" id="bookIsbn" placeholder="e.g. 978-0134494166" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono" required>
+            </div>
+
+            <!-- Category (FK) -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Academic Category <span class="text-rose-400">*</span></span>
+                <span class="text-[10px] text-gray-400 font-mono">FK Categories</span>
+              </label>
+              <select id="bookCategory" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+                <!-- Filled by JS -->
+              </select>
+            </div>
+
+            <!-- Custom Cover Picture URL -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+                Cover Photo URL (Custom Picture)
+              </label>
+              <input type="url" id="bookImage" value="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400" required>
+            </div>
+
+            <!-- Total Copies -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+                Total Acquired Copies <span class="text-rose-400">*</span>
+              </label>
+              <input type="number" id="bookTotalCopies" value="5" min="1" max="100" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white font-mono" required>
+            </div>
+
+            <!-- Available Copies (Check constraint: between 0 and total_copies) -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Currently Available Copies</span>
+                <span class="text-[10px] text-amber-300 font-mono">0 &le; copies &le; total</span>
+              </label>
+              <input type="number" id="bookAvailableCopies" value="5" min="0" max="100" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white font-mono" required>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              Subject Summary / Abstract
+            </label>
+            <textarea id="bookDescription" rows="3" class="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400">Core university curriculum reading for technical architecture and software engineering principles.</textarea>
+          </div>
+
+          <div class="pt-2 flex items-center gap-3">
+            <button type="submit" id="btnSaveBook" class="flex-1 btn-emerald py-3.5 px-6 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+              <i class="fa-solid fa-floppy-disk"></i> Save Book to Database
+            </button>
+            <button type="button" onclick="resetForm()" class="btn-secondary py-3.5 px-4 rounded-xl text-xs font-bold">
+              Reset Form
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <!-- RIGHT: Live Cover Preview Card -->
+      <div class="lg:col-span-4">
+        <div class="sticky top-28 space-y-4">
+          <div class="text-xs uppercase font-extrabold tracking-widest text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-eye"></i> Real-Time Book Preview
+          </div>
+
+          <div class="glass-card rounded-2xl overflow-hidden border border-emerald-500/30">
+            <div class="h-64 bg-black/40 relative overflow-hidden">
+              <img id="previewImg" src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0b1329] via-transparent to-black/30"></div>
+              
+              <div class="absolute top-3 left-3">
+                <span id="previewCat" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-black/80 text-emerald-300 border border-emerald-500/30">
+                  Computer Science
+                </span>
+              </div>
+
+              <div class="absolute top-3 right-3">
+                <span id="previewStockBadge" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  5/5 In Stock
+                </span>
+              </div>
+
+              <div class="absolute bottom-2 left-3 text-[10px] font-mono text-gray-300 bg-black/80 px-2 py-0.5 rounded">
+                <span id="previewIsbn">ISBN: 978-0134494166</span>
+              </div>
+            </div>
+
+            <div class="p-4 space-y-2">
+              <h3 id="previewTitle" class="font-bold text-sm text-white line-clamp-2">
+                Clean Architecture: A Craftsman's Guide
+              </h3>
+              <p id="previewAuthor" class="text-xs text-gray-400">
+                By Robert C. Martin
+              </p>
+              <p id="previewDesc" class="text-[11px] text-gray-500 line-clamp-3">
+                Core university curriculum reading for technical architecture.
+              </p>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-gray-400 text-center">
+            You can paste any custom image link (from Unsplash, Google Books, or your college library CDN).
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Existing Books Table -->
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4">
+      <h3 class="font-serif-title text-xl font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-list-check text-emerald-400"></i> Existing Books in Library Database
+      </h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left">
+          <thead>
+            <tr class="border-b border-white/10 text-gray-400 uppercase text-[10px]">
+              <th class="py-2.5">Cover & Title</th>
+              <th class="py-2.5">Author</th>
+              <th class="py-2.5">ISBN (UNIQUE)</th>
+              <th class="py-2.5">Category</th>
+              <th class="py-2.5 text-center">Copies (Available / Total)</th>
+              <th class="py-2.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="booksTableBody" class="divide-y divide-white/5 text-gray-300">
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer id="global-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLibraryHeader('add-book');
+      renderLibraryFooter();
+      initAddEditPage();
+    });
+
+    const SAMPLES = {
+      python: {
+        title: 'Python Crash Course (3rd Edition)',
+        author: 'Eric Matthes',
+        isbn: '978-1718502703',
+        category_id: 1,
+        total: 6,
+        available: 6,
+        image: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=800&q=80',
+        desc: 'A hands-on, project-based introduction to programming with Python, data visualization, and web applications.'
+      },
+      cleanCode: {
+        title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
+        author: 'Robert C. Martin',
+        isbn: '978-0132350884',
+        category_id: 1,
+        total: 5,
+        available: 3,
+        image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80',
+        desc: 'Standard professional guide to writing meaningful names, small functions, unit tests, and refactoring techniques.'
+      },
+      aiModern: {
+        title: 'Artificial Intelligence: A Modern Approach (4th Edition)',
+        author: 'Stuart Russell, Peter Norvig',
+        isbn: '978-0134610993',
+        category_id: 2,
+        total: 4,
+        available: 2,
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+        desc: 'The leading authoritative textbook in artificial intelligence, search algorithms, probabilistic reasoning, and robotics.'
+      }
+    };
+
+    function loadSample(key) {
+      const s = SAMPLES[key];
+      if (!s) return;
+      document.getElementById('bookTitle').value = s.title;
+      document.getElementById('bookAuthor').value = s.author;
+      document.getElementById('bookIsbn').value = s.isbn;
+      document.getElementById('bookCategory').value = s.category_id;
+      document.getElementById('bookTotalCopies').value = s.total;
+      document.getElementById('bookAvailableCopies').value = s.available;
+      document.getElementById('bookImage').value = s.image;
+      document.getElementById('bookDescription').value = s.desc;
+      updatePreview();
+    }
+
+    function initAddEditPage() {
+      // 1. Categories
+      const categories = window.libDB.getCategories();
+      const select = document.getElementById('bookCategory');
+      select.innerHTML = '';
+      categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.category_id;
+        opt.textContent = c.category_name;
+        select.appendChild(opt);
+      });
+
+      // 2. Form live preview listeners
+      const form = document.getElementById('bookForm');
+      form.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', updatePreview);
+        el.addEventListener('change', updatePreview);
+      });
+
+      // 3. Check for URL edit query param ?id=X
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('id');
+      if (editId) {
+        const book = window.libDB.getBookById(editId);
+        if (book) populateEditForm(book);
+      }
+
+      form.addEventListener('submit', handleFormSubmit);
+
+      updatePreview();
+      renderBooksTable();
+    }
+
+    function populateEditForm(book) {
+      document.getElementById('bookIdInput').value = book.book_id;
+      document.getElementById('bookTitle').value = book.title;
+      document.getElementById('bookAuthor').value = book.author;
+      document.getElementById('bookIsbn').value = book.isbn;
+      document.getElementById('bookCategory').value = book.category_id;
+      document.getElementById('bookTotalCopies').value = book.total_copies;
+      document.getElementById('bookAvailableCopies').value = book.available_copies;
+      document.getElementById('bookImage').value = book.cover_image;
+      document.getElementById('bookDescription').value = book.description;
+
+      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-400"></i> Edit Book: ${book.title}`;
+      document.getElementById('btnSaveBook').innerHTML = `<i class="fa-solid fa-check"></i> Update Book Record`;
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const title = document.getElementById('bookTitle').value || 'Book Title';
+      const author = document.getElementById('bookAuthor').value || 'Author Name';
+      const isbn = document.getElementById('bookIsbn').value || '978-0000000000';
+      const image = document.getElementById('bookImage').value || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80';
+      const desc = document.getElementById('bookDescription').value || 'Summary...';
+      const catSelect = document.getElementById('bookCategory');
+      const catText = catSelect.options[catSelect.selectedIndex] ? catSelect.options[catSelect.selectedIndex].text : 'Category';
+      const total = Number(document.getElementById('bookTotalCopies').value) || 1;
+      const avail = Number(document.getElementById('bookAvailableCopies').value) || 0;
+
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('previewAuthor').textContent = `By ${author}`;
+      document.getElementById('previewIsbn').textContent = `ISBN: ${isbn}`;
+      document.getElementById('previewImg').src = image;
+      document.getElementById('previewDesc').textContent = desc;
+      document.getElementById('previewCat').textContent = catText;
+      document.getElementById('previewStockBadge').textContent = `${avail}/${total} In Stock`;
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const total = Number(document.getElementById('bookTotalCopies').value);
+      const avail = Number(document.getElementById('bookAvailableCopies').value);
+
+      if (avail > total) {
+        alert('Available copies cannot be greater than total copies (CHECK constraint: 0 <= available_copies <= total_copies).');
+        return;
+      }
+
+      const bookData = {
+        book_id: document.getElementById('bookIdInput').value || null,
+        title: document.getElementById('bookTitle').value,
+        author: document.getElementById('bookAuthor').value,
+        isbn: document.getElementById('bookIsbn').value,
+        category_id: document.getElementById('bookCategory').value,
+        total_copies: total,
+        available_copies: avail,
+        cover_image: document.getElementById('bookImage').value,
+        description: document.getElementById('bookDescription').value
+      };
+
+      try {
+        const saved = window.libDB.saveBook(bookData);
+        alert(`Book "${saved.title}" saved successfully to the library catalogue!`);
+        resetForm();
+        renderBooksTable();
+      } catch (err) {
+        alert('Validation Error: ' + err.message);
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('bookIdInput').value = '';
+      document.getElementById('bookForm').reset();
+      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus text-emerald-400"></i> Book Metadata & Inventory Details`;
+      document.getElementById('btnSaveBook').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Book to Database`;
+      document.getElementById('bookImage').value = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80';
+      updatePreview();
+    }
+
+    function renderBooksTable() {
+      const books = window.libDB.getBooks();
+      const categories = window.libDB.getCategories();
+      const tbody = document.getElementById('booksTableBody');
+      tbody.innerHTML = '';
+
+      books.forEach(b => {
+        const cat = categories.find(c => c.category_id == b.category_id) || { category_name: 'General' };
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/5 transition-colors';
+        tr.innerHTML = `
+          <td class="py-2.5 flex items-center gap-3">
+            <img src="${b.cover_image}" class="w-8 h-10 object-cover rounded shadow border border-white/10">
+            <div class="font-bold text-white max-w-xs truncate">${b.title}</div>
+          </td>
+          <td class="py-2.5 text-gray-300">${b.author}</td>
+          <td class="py-2.5 font-mono text-emerald-300">${b.isbn}</td>
+          <td class="py-2.5 text-gray-400">${cat.category_name}</td>
+          <td class="py-2.5 text-center font-bold ${b.available_copies > 0 ? 'text-emerald-400' : 'text-rose-400'}">
+            ${b.available_copies} / ${b.total_copies}
+          </td>
+          <td class="py-2.5 text-right">
+            <button onclick='editBook(${JSON.stringify(b).replace(/'/g, "&#39;")})' class="text-emerald-400 hover:underline mr-3">
+              <i class="fa-solid fa-pen"></i> Edit
+            </button>
+            <a href="issue-book.html?book_id=${b.book_id}" class="text-blue-400 hover:underline">
+              Issue &rarr;
+            </a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function editBook(b) {
+      populateEditForm(b);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
